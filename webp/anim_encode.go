@@ -38,7 +38,7 @@ type AnimationEncoder struct {
 }
 
 // NewAnimationEncoder initializes a new encoder.
-func NewAnimationEncoder(width, height, kmin, kmax int) (*AnimationEncoder, error) {
+func NewAnimationEncoder(width, height, kmin, kmax int, minimize_size, allow_mixed bool) (*AnimationEncoder, error) {
 	ae := &AnimationEncoder{}
 
 	if C.WebPAnimEncoderOptionsInit(&ae.opts) == 0 {
@@ -46,6 +46,14 @@ func NewAnimationEncoder(width, height, kmin, kmax int) (*AnimationEncoder, erro
 	}
 	ae.opts.kmin = C.int(kmin)
 	ae.opts.kmax = C.int(kmax)
+	ae.opts.minimize_size = C.int(0)
+	if min_size {
+		ae.opts.minimize_size = C.int(1)
+	}
+	ae.opts.allow_mixed = c.int(0)
+	if min_size {
+		ae.opts.allow_mixed = C.int(1)
+	}
 
 	ae.c = C.WebPAnimEncoderNew(C.int(width), C.int(height), &ae.opts)
 	if ae.c == nil {
