@@ -87,8 +87,6 @@ func (ae *AnimationEncoder) AddFrame(img image.Image, duration time.Duration, lo
 	pic.width = C.int(img.Bounds().Dx())
 	pic.height = C.int(img.Bounds().Dy())
 
-	pic.writer = C.WebPWriterFunction(C.writeWebP)
-
 	switch p := img.(type) {
 	case *RGBImage:
 		C.WebPPictureImportRGB(pic, (*C.uint8_t)(&p.Pix[0]), C.int(p.Stride))
