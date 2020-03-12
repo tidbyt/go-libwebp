@@ -64,7 +64,7 @@ func NewAnimationEncoder(width, height, kmin, kmax int, minimize_size, allow_mix
 }
 
 // AddFrame adds a frame to the encoder.
-func (ae *AnimationEncoder) AddFrame(img image.Image, duration time.Duration) error {
+func (ae *AnimationEncoder) AddFrame(img image.Image, duration time.Duration, lossless bool) error {
 	pic := C.calloc_WebPPicture()
 	if pic == nil {
 		return errors.New("Could not allocate webp picture")
@@ -97,14 +97,26 @@ func (ae *AnimationEncoder) AddFrame(img image.Image, duration time.Duration) er
 	timestamp := C.int(ae.duration / time.Millisecond)
 	ae.duration += duration
 
-	if C.WebPAnimEncoderAdd(ae.c, pic, timestamp, nil) == 0 {
+	var config c.WebPConfig
+	c.WebPConfigInit(&config)
+	if lossless {
+		config.lossless = c.Int(1)
+		config.lossy = c.Int(0)
+	} else {
+		config.lossless = c.Int(0)
+		config.lossy = c.Int(1)
+	}
+
+	if C.WebPAnimEncoderAdd(ae.c, pic, timestamp, &config) == 0 {
 		return fmt.Errorf(
 			"Encoding error: %d - %s",
 			int(pic.error_code),
 			C.GoString(C.WebPAnimEncoderGetError(ae.c)),
 		)
 	}
-
+	// Stuff to try:
+	//  - Pass a WebPConfig to AnimEncoderAdd as last param, and tweak it
+	//  - asdf
 	return nil
 }
 
