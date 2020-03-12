@@ -26,6 +26,10 @@ import (
 	"unsafe"
 )
 
+func Hello() {
+	fmt.Println("Hello, World!")
+}
+
 // AnimationEncoder encodes multiple images into an animated WebP.
 type AnimationEncoder struct {
 	opts     C.WebPAnimEncoderOptions
