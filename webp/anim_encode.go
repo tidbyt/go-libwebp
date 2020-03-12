@@ -28,6 +28,12 @@ import (
 
 func Hello() {
 	fmt.Println("Hello, World!")
+	enc_version := C.WebPGetEncoderVersion()
+	mux_version := C.WebPGetMuxVersion()
+	fmt.Printf("WebP Encoder version: %d.%d.%d\nWebP Mux version: %d.%d.%d\n",
+		(enc_version>>16)&0xff, (enc_version>>8)&0xff,
+		enc_version&0xff, (mux_version>>16)&0xff,
+		(mux_version>>8)&0xff, mux_version&0xff)
 }
 
 // AnimationEncoder encodes multiple images into an animated WebP.
