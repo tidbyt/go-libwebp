@@ -97,8 +97,8 @@ func (ae *AnimationEncoder) AddFrame(img image.Image, duration time.Duration, lo
 	timestamp := C.int(ae.duration / time.Millisecond)
 	ae.duration += duration
 
-	var config c.WebPConfig
-	c.WebPConfigInit(&config)
+	var config C.WebPConfig
+	C.WebPConfigInit(&config)
 	if lossless {
 		config.lossless = C.int(1)
 		config.lossy = C.int(0)
