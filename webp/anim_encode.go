@@ -100,11 +100,11 @@ func (ae *AnimationEncoder) AddFrame(img image.Image, duration time.Duration, lo
 	var config c.WebPConfig
 	c.WebPConfigInit(&config)
 	if lossless {
-		config.lossless = C.Int(1)
-		config.lossy = C.Int(0)
+		config.lossless = C.int(1)
+		config.lossy = C.int(0)
 	} else {
-		config.lossless = C.Int(0)
-		config.lossy = C.Int(1)
+		config.lossless = C.int(0)
+		config.lossy = C.int(1)
 	}
 
 	if C.WebPAnimEncoderAdd(ae.c, pic, timestamp, &config) == 0 {
