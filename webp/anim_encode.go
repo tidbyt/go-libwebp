@@ -15,10 +15,6 @@ static WebPPicture *calloc_WebPPicture(void) {
 static void free_WebPPicture(WebPPicture* webpPicture) {
 	free(webpPicture);
 }
-
-static void callReader(WebPImageReader reader, void *data, size_t data_size, WebPPicture* pic) {
-	reader(data, data_size, pic, 1, NULL);
-}
 */
 import "C"
 
@@ -74,7 +70,7 @@ func NewAnimationEncoder(width, height, kmin, kmax int, minimize_size, allow_mix
 }
 
 // AddFrame adds a frame to the encoder.
-func (ae *AnimationEncoder) AddFrame(img image.Image, duration time.Duration, lossless bool, png []byte) error {
+func (ae *AnimationEncoder) AddFrame(img image.Image, duration time.Duration, lossless bool) error {
 	pic := C.calloc_WebPPicture()
 	if pic == nil {
 		return errors.New("Could not allocate webp picture")
@@ -93,21 +89,16 @@ func (ae *AnimationEncoder) AddFrame(img image.Image, duration time.Duration, lo
 
 	pic.writer = C.WebPWriterFunction(C.writeWebP)
 
-	reader := C.WebPGuessImageReader((*C.uint8_t)(&png[0]), C.int(len(png)))
-	C.callReader(reader, (*C.uint8_t)(&png[0]), C.int(data_size), pic)
-
-	/*
-		switch p := img.(type) {
-		case *RGBImage:
-			C.WebPPictureImportRGB(pic, (*C.uint8_t)(&p.Pix[0]), C.int(p.Stride))
-		case *image.RGBA:
-			C.WebPPictureImportRGBA(pic, (*C.uint8_t)(&p.Pix[0]), C.int(p.Stride))
-		case *image.NRGBA:
-			C.WebPPictureImportRGBA(pic, (*C.uint8_t)(&p.Pix[0]), C.int(p.Stride))
-		default:
-			return errors.New("unsupported image type")
-		}
-	*/
+	switch p := img.(type) {
+	case *RGBImage:
+		C.WebPPictureImportRGB(pic, (*C.uint8_t)(&p.Pix[0]), C.int(p.Stride))
+	case *image.RGBA:
+		C.WebPPictureImportRGBA(pic, (*C.uint8_t)(&p.Pix[0]), C.int(p.Stride))
+	case *image.NRGBA:
+		C.WebPPictureImportRGBA(pic, (*C.uint8_t)(&p.Pix[0]), C.int(p.Stride))
+	default:
+		return errors.New("unsupported image type")
+	}
 
 	timestamp := C.int(ae.duration / time.Millisecond)
 	ae.duration += duration
