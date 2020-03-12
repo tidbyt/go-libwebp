@@ -50,7 +50,7 @@ func NewAnimationEncoder(width, height, kmin, kmax int, minimize_size, allow_mix
 	if minimize_size {
 		ae.opts.minimize_size = C.int(1)
 	}
-	ae.opts.allow_mixed = c.int(0)
+	ae.opts.allow_mixed = C.int(0)
 	if minimize_size {
 		ae.opts.allow_mixed = C.int(1)
 	}
