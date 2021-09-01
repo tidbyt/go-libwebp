@@ -49,3 +49,26 @@ func TestEncodeAnimation(t *testing.T) {
 		t.Errorf("assembled animation is empty")
 	}
 }
+
+func TestEncodeWebPAnimation(t *testing.T) {
+	data := util.ReadFile("cosmos.webp")
+	aWebP, err := webp.DecodeRGBA(data, &webp.DecoderOptions{})
+	if err != nil {
+		t.Fatalf("Got Error: %v", err)
+	}
+
+	imgs := []image.Image{
+		util.ReadPNG("butterfly.png"),
+		util.ReadPNG("checkerboard.png"),
+		util.ReadPNG("yellow-rose-3.png"),
+		aWebP,
+	}
+
+	buf, err := webp.EncodeWebPAnimation(imgs, 100*time.Millisecond)
+	if err != nil {
+		t.Fatalf("assembling animation: %v", err)
+	}
+	if len(buf) == 0 {
+		t.Errorf("assembled animation is empty")
+	}
+}
