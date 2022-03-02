@@ -5,6 +5,8 @@ go-libwebp
 
 A implementation of Go binding for [libwebp](https://developers.google.com/speed/webp/docs/api).
 
+Originally forked from [harukasan/go-libwebp](https://github.com/harukasan/go-libwebp).
+
 ## Dependencies
 
 - libwebp 0.5+, compiled with `--enable-libwebpmux`
