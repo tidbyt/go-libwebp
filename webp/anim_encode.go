@@ -107,15 +107,26 @@ func (ae *AnimationEncoder) Assemble() ([]byte, error) {
 
 	data := &C.WebPData{}
 	C.WebPDataInit(data)
+	defer C.WebPDataClear(data)
 
 	if C.WebPAnimEncoderAssemble(ae.c, data) == 0 {
 		return nil, errors.New("Error assembling animation")
 	}
 
-	return C.GoBytes(
-		unsafe.Pointer(data.bytes),
-		C.int(int(data.size)),
-	), nil
+	size := int(data.size)
+	out := make([]byte, size)
+	n := copy(
+		out, C.GoBytes(
+			unsafe.Pointer(data.bytes),
+			C.int(size),
+		),
+	)
+
+	if n != size {
+		return nil, errors.New("Error copying animation from C to Go")
+	}
+
+	return out, nil
 }
 
 // Close deletes the encoder and frees resources.
