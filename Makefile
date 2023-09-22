@@ -2,7 +2,7 @@ repo = github.com/tidbyt/go-libwebp
 build_dir = /tmp
 cur_dir = $(shell pwd)
 libwebp_so = ${LIBWEBP_PREFIX}/lib/libwebp.so
-LIBWEBP_VERSION ?= 0.5.1
+LIBWEBP_VERSION ?= 1.3.2
 
 all: test
 
